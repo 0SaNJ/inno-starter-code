@@ -1,0 +1,51 @@
+int motorenable = 3;
+int motorinput1 = 2;
+int motorinput2 = 4;
+int motorenable1 = 5;
+int motorinput3 = 6;
+int motorinput4 = 7;
+
+void motorforward1() {
+  analogWrite(motorenable1, 255);
+  digitalWrite(motorinput3, HIGH);
+  digitalWrite(motorinput4, LOW);
+}
+
+void motorbackward1() {
+  analogWrite(motorenable1, 255);
+  digitalWrite(motorinput3, LOW);
+  digitalWrite(motorinput4, HIGH);
+}
+
+void motorforward() {
+  analogWrite(motorenable, 127);
+  digitalWrite(motorinput1, LOW);
+  digitalWrite(motorinput2, HIGH);
+}
+
+void motorbackward() {
+  analogWrite(motorenable, 127);
+  digitalWrite(motorinput1, HIGH);
+  digitalWrite(motorinput2, LOW);
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(motorenable, OUTPUT);
+  pinMode(motorinput1, OUTPUT);
+  pinMode(motorinput2, OUTPUT);
+  pinMode(motorenable1, OUTPUT);
+  pinMode(motorinput3, OUTPUT);
+  pinMode(motorinput4, OUTPUT);
+}
+
+void loop() {
+  motorforward();
+  delay(2000);
+  motorbackward();
+  delay(2000);
+  motorforward1();
+  delay(1000);
+  motorbackward1();
+  delay(1000);
+}
