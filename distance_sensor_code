@@ -1,0 +1,56 @@
+#include <Servo.h>
+
+Servo myServo;
+
+int trigger = 3;
+int echo = 4;
+int servo = 5;
+int echoValue;
+int ServoValue;
+
+float distance;
+long duration; 
+void setup()
+{
+  myServo.attach(servo);
+  Serial.begin(9600);
+  pinMode(trigger, OUTPUT);
+  pinMode(echo, INPUT);
+}
+void afstand()
+{
+  digitalWrite(trigger, LOW);
+  delay(2);
+    
+  digitalWrite(trigger, HIGH);
+  delay(10);
+  
+  digitalWrite(trigger, LOW);
+  
+  duration = pulseIn(echo, HIGH);
+  distance=(duration*0.034)/2;
+  
+   Serial.print("\n Distance: ");
+  Serial.print(distance);
+  Serial.print(" cm");
+  delay(100);
+}
+void turnservo()
+{
+  echoValue = analogRead(echo); 
+  ServoValue = map(distance, 0, 800, 0, 180); 
+  myServo.write(ServoValue);
+  Serial.println(ServoValue);
+}
+
+
+void loop(){
+  
+  afstand();
+  
+  if(echoValue < 180) {
+  turnservo();
+  }else {
+   ServoValue = map(distance, 0, 800, 0, 90);
+  }
+}
