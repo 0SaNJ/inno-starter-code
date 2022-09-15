@@ -1,0 +1,23 @@
+int pot = A0;
+int LED = 3;
+int Led = 5;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LED, OUTPUT);
+  pinMode(Led, OUTPUT);
+}
+
+void loop() {
+  int pot_value = analogRead(pot);
+  Serial.println(pot_value);
+  int LED_value = map(pot_value, 20, 358, 0, 255);
+
+  if (pot_value > 158) {
+    digitalWrite(LED, LOW);
+    digitalWrite(Led, HIGH);
+  } else {
+    digitalWrite(LED, HIGH);
+    digitalWrite(Led, LOW);
+  }
+}
