@@ -1,85 +1,92 @@
-//Motor1
-int motorenable = 3;
-int motorinput1 = 2;
-int motorinput2 = 4;
-//Motor2
-int motorenable1 = 5;
-int motorinput3 = 6;
-int motorinput4 = 7;
+//motor1
+int motorenable1 = 3;
+int motorinput1 = 4;
+int motorinput2 = 5;
+//motor2
+int motorenable2 = 6;
+int motorinput3 = 7;
+int motorinput4 = 8;
 int state;
-//Led1
+//led
 int led1 = 9;
-//Led2
-int led2 = 8;
+int led2 = 10;
 
-void motorforward1() {
-
-  digitalWrite(motorinput3, HIGH);
-  digitalWrite(motorinput4, LOW);
-  digitalWrite(motorinput1, LOW);
-  digitalWrite(motorinput2, HIGH);
-
-}
-
-void motorbackward1() {
-
-  digitalWrite(motorinput3, LOW);
-  digitalWrite(motorinput4, HIGH);
-  digitalWrite(motorinput1, HIGH);
-  digitalWrite(motorinput2, LOW);
-}
-void right() {
-  digitalWrite(motorinput3, LOW);
-  digitalWrite(motorinput4, HIGH);
-  digitalWrite(motorinput1, LOW);
-  digitalWrite(motorinput2, LOW);
-}
-
-void left() {
-  digitalWrite(motorinput3, LOW);
-  digitalWrite(motorinput4, LOW);
-  digitalWrite(motorinput1, HIGH);
-  digitalWrite(motorinput2, LOW);
-}
-
-void fullstop() {
-  digitalWrite(motorinput3, LOW);
-  digitalWrite(motorinput4, LOW);
-  digitalWrite(motorinput1, LOW);
-  digitalWrite(motorinput2, LOW);
-}
-
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  pinMode(motorenable, OUTPUT);
+  pinMode(motorenable1, OUTPUT);
   pinMode(motorinput1, OUTPUT);
   pinMode(motorinput2, OUTPUT);
-  pinMode(motorenable1, OUTPUT);
+  pinMode(motorenable2, OUTPUT);
   pinMode(motorinput3, OUTPUT);
   pinMode(motorinput4, OUTPUT);
+  analogWrite(motorenable1, 255);
+  analogWrite(motorenable2, 255);
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
-  analogWrite(motorenable, 255);
-  analogWrite(motorenable1, 255);
 }
 
-void loop() {
+void forward()
+{
+  digitalWrite(motorinput1, HIGH);
+  digitalWrite(motorinput2, LOW);
+  digitalWrite(motorinput3, LOW);
+  digitalWrite(motorinput4, HIGH);
+  digitalWrite(led1, HIGH);
+  digitalWrite(led2, LOW);
+}
+
+void backward()
+{
+  digitalWrite(motorinput1, LOW);
+  digitalWrite(motorinput2, HIGH);
+  digitalWrite(motorinput3, HIGH);
+  digitalWrite(motorinput4, LOW);
+  digitalWrite(led1, LOW);
+  digitalWrite(led2, HIGH);
+}
+
+void left()
+{
+  digitalWrite(motorinput1, HIGH);
+  digitalWrite(motorinput2, LOW);
+  digitalWrite(motorinput3, LOW);
+  digitalWrite(motorinput4, LOW);
+}
+
+void right()
+{
+  digitalWrite(motorinput1, LOW);
+  digitalWrite(motorinput2, LOW);
+  digitalWrite(motorinput3, LOW);
+  digitalWrite(motorinput4, HIGH);
+}
+
+void fullstop()
+{
+  digitalWrite(motorinput1, LOW);
+  digitalWrite(motorinput2, LOW);
+  digitalWrite(motorinput3, LOW);
+  digitalWrite(motorinput4, LOW);
+  digitalWrite(led1, LOW);
+  digitalWrite(led2, LOW);
+}
+
+void loop() 
+{
   //Serial IF statement
   if (Serial.available() > 0) {
     state = Serial.read();
   }
   //Else If statements
   if (state == 'F') {
-    motorforward1();
+    forward();
     Serial.println("Forward");
-    digitalWrite(led1, HIGH);
-    digitalWrite(led2, LOW);
-
+    
   } else if (state == 'B') {
-    motorbackward1();
+    backward();
     Serial.println("Backward");
-    digitalWrite(led2, HIGH);
-    digitalWrite(led1, LOW);
+    
 
   } else if (state == 'L') {
     left();
@@ -92,8 +99,7 @@ void loop() {
   } else if (state == 'S') {
     fullstop();
     Serial.println("FullStop");
-    digitalWrite(led1, LOW);
-    digitalWrite(led2, LOW);
+    
 
   } else {
     Serial.println("Input command");
