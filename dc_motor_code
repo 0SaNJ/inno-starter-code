@@ -11,59 +11,68 @@ int state;
 int led1 = 9;
 int led2 = 10;
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
+  //motor1
   pinMode(motorenable1, OUTPUT);
   pinMode(motorinput1, OUTPUT);
   pinMode(motorinput2, OUTPUT);
+  //motor2
   pinMode(motorenable2, OUTPUT);
   pinMode(motorinput3, OUTPUT);
   pinMode(motorinput4, OUTPUT);
+  //enable1
   analogWrite(motorenable1, 255);
+  //enable2
   analogWrite(motorenable2, 255);
+  //led
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
 }
 
-void forward()
-{
+void forward() {
+  //motor1
   digitalWrite(motorinput1, HIGH);
   digitalWrite(motorinput2, LOW);
+  //motor2
   digitalWrite(motorinput3, LOW);
   digitalWrite(motorinput4, HIGH);
+  //led
   digitalWrite(led1, HIGH);
   digitalWrite(led2, LOW);
 }
 
-void backward()
-{
+void backward() {
+  //motor1
   digitalWrite(motorinput1, LOW);
   digitalWrite(motorinput2, HIGH);
+  //motor2
   digitalWrite(motorinput3, HIGH);
   digitalWrite(motorinput4, LOW);
+  //led
   digitalWrite(led1, LOW);
   digitalWrite(led2, HIGH);
 }
 
-void left()
-{
+void left() {
+  //motor1
   digitalWrite(motorinput1, HIGH);
   digitalWrite(motorinput2, LOW);
+  //motor2
   digitalWrite(motorinput3, LOW);
   digitalWrite(motorinput4, LOW);
 }
 
-void right()
-{
+void right() {
+  //motor1
   digitalWrite(motorinput1, LOW);
   digitalWrite(motorinput2, LOW);
+  //motor2
   digitalWrite(motorinput3, LOW);
   digitalWrite(motorinput4, HIGH);
 }
 
-void fullstop()
-{
+void fullstop() {
   digitalWrite(motorinput1, LOW);
   digitalWrite(motorinput2, LOW);
   digitalWrite(motorinput3, LOW);
@@ -72,35 +81,38 @@ void fullstop()
   digitalWrite(led2, LOW);
 }
 
-void loop() 
-{
+void loop() {
   //Serial IF statement
   if (Serial.available() > 0) {
     state = Serial.read();
   }
   //Else If statements
+  //Forward
   if (state == 'F') {
     forward();
     Serial.println("Forward");
-    
+
+    //backward
   } else if (state == 'B') {
     backward();
     Serial.println("Backward");
-    
 
+    //left
   } else if (state == 'L') {
     left();
     Serial.println("Left");
 
+    //right
   } else if (state == 'R') {
     right();
     Serial.println("Right");
 
+    //stop
   } else if (state == 'S') {
     fullstop();
     Serial.println("FullStop");
-    
 
+    //input command
   } else {
     Serial.println("Input command");
   }
