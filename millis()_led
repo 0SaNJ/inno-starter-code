@@ -1,0 +1,49 @@
+int led = 2;
+int led1 = 3;
+int led2 = 4;
+//red
+int ledDelay = 1000;
+unsigned long ledLastRun = 0;
+//green
+int led1Delay = 500;
+unsigned long led1LastRun = 0;
+//yellow
+int led2Delay = 333;
+unsigned long led2LastRun = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(led, OUTPUT);
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+}
+
+void red() {
+  if (millis() - ledLastRun >= ledDelay) {
+    digitalWrite(led, !digitalRead(led));
+    ledLastRun = millis();
+    //Serial.println("red");
+  }
+}
+
+void green() {
+  if (millis() - led1LastRun >= led1Delay) {
+    digitalWrite(led1, !digitalRead(led1));
+    led1LastRun = millis();
+    //Serial.println("green");
+  }
+}
+
+void yellow() {
+  if (millis() - led2LastRun >= led2Delay) {
+    digitalWrite(led2, !digitalRead(led2));
+    led2LastRun = millis();
+    //Serial.println("yellow");
+  }
+}
+
+void loop() {
+  red();
+  green();
+  yellow();
+}
