@@ -1,0 +1,43 @@
+#include <Servo.h>
+
+Servo myServo;
+
+int redLed = 2;
+int servo = 3;
+
+unsigned long redLedDelay = 500;
+unsigned long servoDelay = 30;
+
+unsigned long redLastRun = 0;
+unsigned long servoLastRun = 0;
+
+unsigned long servoAngle = 0;
+
+void setup() {
+  Serial.begin(9600);
+  myServo.attach(servo);
+  pinMode(redLed, OUTPUT);
+}
+
+void turnservo() {
+  if(millis() - servoLastRun >= servoDelay) {
+    myServo.write(servoAngle);
+    servoAngle++;
+  if(servoAngle == 180) servoAngle = 0;
+    servoLastRun = millis();
+    Serial.println("servo");
+  }
+}
+
+void led() {
+  if(millis() - redLastRun >= redLedDelay) {
+    digitalWrite(redLed, !digitalRead(redLed));
+    redLastRun = millis();
+    Serial.println("led");
+  }
+}
+
+void loop() {
+  turnservo();
+  led();
+}
