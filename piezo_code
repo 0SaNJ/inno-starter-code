@@ -1,0 +1,22 @@
+//piezo
+int piezoPin = 8;
+
+void setup() {
+  pinMode(piezoPin, OUTPUT);
+}
+
+void piezo() {
+  tone(piezoPin, 440, 1000); 
+  
+  tone(piezoPin, 277, 1000); 
+  
+  tone(piezoPin, 370, 1000); 
+  
+  tone(piezoPin, 311, 1000); 
+  
+  tone(piezoPin, 415, 1000); 
+  
+}
+void loop() {
+ piezo();
+}
