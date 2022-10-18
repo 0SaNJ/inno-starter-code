@@ -4,29 +4,36 @@
 Servo servo;
 
 // Define Ultrasonic Sensor
-#define echoPin 9 // attach pin 9 Arduino to pin Echo of HC-SR04
-#define trigPin 10 //attach pin 10 Arduino to pin Trig of HC-SR04
+#define echoPin 4 
+#define trigPin 2
 /
 // defines variables
-long duration; // variable for the duration of sound wave travel
-int dist; // variable for the distance measurement
-int threshold = 50; // Threshold for my obstacles detected
-bool mazeState = 0; // determines if maze solver is on or off
+long duration; 
+int dist; 
+int threshold = 50; 
+bool mazeState = 0; 
 
 volatile int radarArray[3]; //Sweep / Radar 
 
 // MOTOR 1
-int motor1enA = 3; //PWM Speed Control
-int motor1in1 = 2; // Direction Control
-int motor1in2 = 4; // Direction Control
+int motor1enA = 5; //PWM Speed Control
+int motor1in1 = 7; // Direction Control
+int motor1in2 = 8; // Direction Control
 
 //MOTOR 2
-int motor2enB = 5; //PWM Speed Control
-int motor2in3 = 7; // Direction Control
-int motor2in4 = 8; // Direction Control
+int motor2enB = 9; //PWM Speed Control
+int motor2in3 = 10; // Direction Control
+int motor2in4 = 12; // Direction Control
 
-//buzzer
-//const int buzzPin = 12; //buzzer to arduino pin 9
+//MOTOR 3
+int motor3enA = 11; //PWM Speed Control
+int motor3in1 = A0; // Direction Control
+int motor3in2 = A1; // Direction Control
+
+//MOTOR 3
+int motor4enB = 6; //PWM Speed Control
+int motor4in3 = A2; // Direction Control
+int motor4in4 = A3; // Direction Control
 
 //Serial 
 int state;
@@ -43,18 +50,25 @@ void setup() {
   pinMode(motor2enB, OUTPUT);
   pinMode(motor2in3, OUTPUT);
   pinMode(motor2in4, OUTPUT);
+  //MOTOR 3 OUTPUTS
+  pinMode(motor3enA, OUTPUT);
+  pinMode(motor3in1, OUTPUT);
+  pinMode(motor3in2, OUTPUT);
+  //MOTOR 4 OUTPUTS
+  pinMode(motor4enB, OUTPUT);
+  pinMode(motor4in3, OUTPUT);
+  pinMode(motor4in4, OUTPUT);
   //Motor speed control 
-  analogWrite(motor2enB, 255); // Set speed to 0 - 255
-  analogWrite(motor1enA, 255); // Set speed to 0 - 255
+  analogWrite(motor2enB, 255); 
+  analogWrite(motor1enA, 255); 
+  analogWrite(motor3enA, 255);
+  analogWrite(motor4enB, 255);
   //Ultrasonic Sensor setup
-  pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
-  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT);
   //Servo motor
-  servo.attach(11);
+  servo.attach(3);
   servo.write(90);
-  //buzzer
-  //pinMode(buzzPin,INPUT);
-
 }
 
 void forward() {
@@ -89,12 +103,30 @@ void right() {
   digitalWrite(motor2in4, LOW);
 }
 
+void down() {
+  analogWrite(motor3in1, 255);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 255);
+  analogWrite(motor4in4, 0);
+}
+
+void up() {
+  analogWrite(motor3in1, 255);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 0);
+  analogWrite(motor4in4, 255);
+}
+
 void stop() {
 
   digitalWrite(motor1in1, LOW);
   digitalWrite(motor1in2, LOW);
   digitalWrite(motor2in3, LOW);
   digitalWrite(motor2in4, LOW);
+  analogWrite(motor3in1, 0);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 0);
+  analogWrite(motor4in4, 0);
   //delay(2000);
 }
 
@@ -239,7 +271,19 @@ void loop() {
     Serial.println("Stop");
     stop();
 
-  } else if (state == 'M')
+  }else if (state == 'U')
+  
+  { 
+  
+    up();
+    
+  }else if (state == 'D')
+  
+  {
+  
+    down();
+    
+  }else if (state == 'M')
 
   {
 
