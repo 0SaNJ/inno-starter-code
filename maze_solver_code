@@ -21,17 +21,17 @@ int motor1in1 = 7; // Direction Control
 int motor1in2 = 8; // Direction Control
 
 //MOTOR 2
-int motor2enB = 9; //PWM Speed Control
-int motor2in3 = 10; // Direction Control
+int motor2enB = 6; //PWM Speed Control
+int motor2in3 = 11; // Direction Control
 int motor2in4 = 12; // Direction Control
 
 //MOTOR 3
-int motor3enA = 11; //PWM Speed Control
+int motor3enA = 9; //PWM Speed Control
 int motor3in1 = A0; // Direction Control
 int motor3in2 = A1; // Direction Control
 
 //MOTOR 3
-int motor4enB = 6; //PWM Speed Control
+int motor4enB = 10; //PWM Speed Control
 int motor4in3 = A2; // Direction Control
 int motor4in4 = A3; // Direction Control
 
