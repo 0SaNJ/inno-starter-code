@@ -1,4 +1,4 @@
-/Servo motor
+//Servo motor
 #include <Servo.h>
 
 Servo servo;
@@ -6,7 +6,7 @@ Servo servo;
 // Define Ultrasonic Sensor
 #define echoPin 4 
 #define trigPin 2
-/
+
 // defines variables
 long duration; 
 int dist; 
