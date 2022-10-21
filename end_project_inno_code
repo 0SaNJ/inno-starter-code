@@ -1,0 +1,298 @@
+//Servo motor
+#include <Servo.h>
+
+Servo servo;
+
+// Define Ultrasonic Sensor
+#define echoPin 4 
+#define trigPin 2
+
+// defines variables
+long duration; 
+int dist; 
+int threshold = 50; 
+bool mazeState = 0; 
+
+volatile int radarArray[3]; //Sweep / Radar 
+
+// MOTOR 1
+int motor1enA = 5; //PWM Speed Control
+int motor1in1 = 7; // Direction Control
+int motor1in2 = 8; // Direction Control
+
+//MOTOR 2
+int motor2enB = 6; //PWM Speed Control
+int motor2in3 = 11; // Direction Control
+int motor2in4 = 12; // Direction Control
+
+//MOTOR 3
+int motor3enA = 9; //PWM Speed Control
+int motor3in1 = A0; // Direction Control
+int motor3in2 = A1; // Direction Control
+
+//MOTOR 3
+int motor4enB = 10; //PWM Speed Control
+int motor4in3 = A2; // Direction Control
+int motor4in4 = A3; // Direction Control
+
+//Serial 
+int state;
+
+void setup() {
+  // Start serial communicaiton
+  Serial.begin(9600);
+
+  //MOTOR 1 OUTPUTS
+  pinMode(motor1enA, OUTPUT);
+  pinMode(motor1in1, OUTPUT);
+  pinMode(motor1in2, OUTPUT);
+  //MOTOR 2 OUTPUTS
+  pinMode(motor2enB, OUTPUT);
+  pinMode(motor2in3, OUTPUT);
+  pinMode(motor2in4, OUTPUT);
+  //MOTOR 3 OUTPUTS
+  pinMode(motor3enA, OUTPUT);
+  pinMode(motor3in1, OUTPUT);
+  pinMode(motor3in2, OUTPUT);
+  //MOTOR 4 OUTPUTS
+  pinMode(motor4enB, OUTPUT);
+  pinMode(motor4in3, OUTPUT);
+  pinMode(motor4in4, OUTPUT);
+  //Motor speed control 
+  analogWrite(motor2enB, 255); 
+  analogWrite(motor1enA, 255); 
+  analogWrite(motor3enA, 255);
+  analogWrite(motor4enB, 255);
+  //Ultrasonic Sensor setup
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT);
+  //Servo motor
+  servo.attach(3);
+  servo.write(90);
+}
+
+void forward() {
+  //Serial.println("Forward");
+  digitalWrite(motor1in1, HIGH);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, HIGH);
+  digitalWrite(motor2in4, LOW);
+  // delay(2000); 
+}
+
+void backward() {
+
+  digitalWrite(motor1in1, LOW);
+  digitalWrite(motor1in2, HIGH);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, HIGH);
+  //delay(2000);
+}
+
+void left() {
+  digitalWrite(motor1in1, LOW);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, HIGH);
+}
+
+void right() {
+  digitalWrite(motor1in1, HIGH);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, LOW);
+}
+
+void down() {
+  analogWrite(motor3in1, 255);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 255);
+  analogWrite(motor4in4, 0);
+}
+
+void up() {
+  analogWrite(motor3in1, 255);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 0);
+  analogWrite(motor4in4, 255);
+}
+
+void stop() {
+
+  digitalWrite(motor1in1, LOW);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, LOW);
+  analogWrite(motor3in1, 0);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 0);
+  analogWrite(motor4in4, 0);
+  //delay(2000);
+}
+
+void sweep() {
+  // 3 point sweep stored in an global radar array
+  servo.write(0); // right
+  delay(700);
+  radarArray[0] = distance(); 
+  //Serial.println("Angle : 0 Dist : " + String(radarArray[0]));  
+  servo.write(180); //left
+  delay(1200);
+  radarArray[2] = distance();
+  //Serial.println("Angle : 180 Dist : " + String(radarArray[2])); 
+  servo.write(90); // middle
+  delay(700);
+  radarArray[1] = distance(); //m 
+  //Serial.println("Angle : 90 Dist : " + String(radarArray[1]));
+  delay(700);
+}
+
+int distance() {
+  //function distance that returns integer val (distance in cm)
+  //Ultrasonic Sensor Logic
+  // Clears the trigPin condition
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  dist = duration*0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  // dist = duration*0.034*10 / 2; //MM
+  // Displays the distance on the Serial Monitor
+  //Serial.print("Distance: ");
+  //Serial.print(dist);
+  //Serial.println(" cm ");
+  return dist;
+
+}
+
+
+void mazeCheck(int dist) {
+
+  threshold = dist;
+  mazeState = !mazeState;
+  Serial.print("Solving the maze: distance " + String(threshold) + " ");
+  Serial.println(String(mazeState));
+  if (mazeState == false) {
+    // reset the motors when switching off
+    stop(); // maze off stop
+  } else
+
+    sweep(); // maze on sweep
+} // creator function is done and mazeupdate will be called in each cycle of loop
+
+void mazeUpdate() {
+
+  if (!mazeState) { // If maze is off call return function and go on with the next loop
+    return;
+  }
+  // If true or on continue below
+  radarArray[1] = distance(); // 
+
+  if (radarArray[1] > threshold) { 
+    // go forward normally
+    forward();
+  } else {
+    // Do the maze actions
+    // warn obstruction
+    stop();
+    // detect right, left & front
+    sweep();
+    if (radarArray[0] > threshold * 2) { // right
+      Serial.println("Turning right 90 deg , dist range: " + String(radarArray[0]));
+      right();
+      delay(200); // making a 90 degree right turn (adjust for urself)
+      forward(); // continue moving forward
+    } else if (radarArray[2] > threshold * 2) { // left
+      Serial.println("Obstacle on Right, turning left 90 deg, dist range: " + String(radarArray[19]));
+      left();
+      delay(200); // making a 90 degree left turn
+      forward(); // continue moving forward
+    } else {
+      Serial.println("Dead end! turning back 180 deg");
+      right();
+      delay(400); // making a 180 degree turn
+      forward(); // continue moving forward
+    }
+  }
+}
+
+void loop() {
+
+  // Serial
+  if (Serial.available() > 0)
+
+  {
+    state = Serial.read();
+
+  }
+
+  //Serial
+  //If else if statement 
+
+  if (state == 'F')
+
+  {
+
+    Serial.println("foward");
+    forward();
+
+  } else if (state == 'B')
+
+  {
+
+    Serial.println("Go bacwards");
+    backward();
+
+  } else if (state == 'L')
+
+  {
+
+    Serial.println("Go Left");
+    left();
+
+  }else if (state == 'R')
+  
+  {
+
+    Serial.println("Go Right");
+    right();
+
+  }
+
+  else if (state == 'S')
+
+  {
+
+    Serial.println("Stop");
+    stop();
+
+  }else if (state == 'U')
+  
+  { 
+  
+    up();
+    
+  }else if (state == 'D')
+  
+  {
+  
+    down();
+    
+  }else if (state == 'M')
+
+  {
+
+    Serial.println("Maze");
+    mazeCheck(200); // mm
+
+  }
+
+  //FUNCTION UPDATE MAZE
+mazeUpdate();
+
+}
