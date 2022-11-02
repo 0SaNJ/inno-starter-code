@@ -1,4 +1,4 @@
-//Servo motor
+
 #include <Servo.h>
 
 Servo servo;
@@ -22,15 +22,15 @@ int motor1in2 = 8; // Direction Control
 
 //MOTOR 2
 int motor2enB = 6; //PWM Speed Control
-int motor2in3 = 11; // Direction Control
-int motor2in4 = 12; // Direction Control
+int motor2in3 = 12; // Direction Control
+int motor2in4 = 11; // Direction Control
 
 //MOTOR 3
 int motor3enA = 9; //PWM Speed Control
 int motor3in1 = A0; // Direction Control
 int motor3in2 = A1; // Direction Control
 
-//MOTOR 3
+//MOTOR 4
 int motor4enB = 10; //PWM Speed Control
 int motor4in3 = A2; // Direction Control
 int motor4in4 = A3; // Direction Control
@@ -92,8 +92,8 @@ void backward() {
 void left() {
   digitalWrite(motor1in1, LOW);
   digitalWrite(motor1in2, LOW);
-  digitalWrite(motor2in3, LOW);
-  digitalWrite(motor2in4, HIGH);
+  digitalWrite(motor2in3, HIGH);
+  digitalWrite(motor2in4, LOW);
 }
 
 void right() {
@@ -238,28 +238,28 @@ void loop() {
 
   {
 
-    Serial.println("foward");
+    //Serial.println("foward");
     forward();
 
   } else if (state == 'B')
 
   {
 
-    Serial.println("Go bacwards");
+    //Serial.println("Go bacwards");
     backward();
 
   } else if (state == 'L')
 
   {
 
-    Serial.println("Go Left");
+    //Serial.println("Go Left");
     left();
 
   }else if (state == 'R')
   
   {
 
-    Serial.println("Go Right");
+    //Serial.println("Go Right");
     right();
 
   }
@@ -268,7 +268,7 @@ void loop() {
 
   {
 
-    Serial.println("Stop");
+    //Serial.println("Stop");
     stop();
 
   }else if (state == 'U')
