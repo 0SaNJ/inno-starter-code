@@ -1,0 +1,173 @@
+// MOTOR 1
+int motor1enA = 5; //PWM Speed Control
+int motor1in1 = 7; // Direction Control
+int motor1in2 = 8; // Direction Control
+
+//MOTOR 2
+int motor2enB = 6; //PWM Speed Control
+int motor2in3 = 12; // Direction Control
+int motor2in4 = 11; // Direction Control
+
+//MOTOR 3
+int motor3enA = 9; //PWM Speed Control
+int motor3in1 = A0; // Direction Control
+int motor3in2 = A1; // Direction Control
+
+//MOTOR 4
+int motor4enB = 10; //PWM Speed Control
+int motor4in3 = A2; // Direction Control
+int motor4in4 = A3; // Direction Control
+
+//Serial 
+int state;
+
+void forward() {
+  //Serial.println("Forward");
+  digitalWrite(motor1in1, HIGH);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, HIGH);
+  // delay(2000); 
+}
+
+void backward() {
+
+  digitalWrite(motor1in1, LOW);
+  digitalWrite(motor1in2, HIGH);
+  digitalWrite(motor2in3, HIGH);
+  digitalWrite(motor2in4, LOW);
+  //delay(2000);
+}
+
+void left() {
+  digitalWrite(motor1in1, LOW);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, HIGH);
+  digitalWrite(motor2in4, LOW);
+}
+
+void right() {
+  digitalWrite(motor1in1, HIGH);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, LOW);
+}
+
+void down() {
+  analogWrite(motor3in1, 255);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 255);
+  analogWrite(motor4in4, 0);
+}
+
+void up() {
+  analogWrite(motor3in1, 0);
+  analogWrite(motor3in2, 255);
+  analogWrite(motor4in3, 0);
+  analogWrite(motor4in4, 255);
+}
+
+void fullstop() {
+
+  digitalWrite(motor1in1, LOW);
+  digitalWrite(motor1in2, LOW);
+  digitalWrite(motor2in3, LOW);
+  digitalWrite(motor2in4, LOW);
+  analogWrite(motor3in1, 0);
+  analogWrite(motor3in2, 0);
+  analogWrite(motor4in3, 0);
+  analogWrite(motor4in4, 0);
+  //delay(2000);
+}
+
+void setup() {
+  // Start serial communicaiton
+  Serial.begin(9600);
+
+  //MOTOR 1 OUTPUTS
+  pinMode(motor1enA, OUTPUT);
+  pinMode(motor1in1, OUTPUT);
+  pinMode(motor1in2, OUTPUT);
+  //MOTOR 2 OUTPUTS
+  pinMode(motor2enB, OUTPUT);
+  pinMode(motor2in3, OUTPUT);
+  pinMode(motor2in4, OUTPUT);
+  //MOTOR 3 OUTPUTS
+  pinMode(motor3enA, OUTPUT);
+  pinMode(motor3in1, OUTPUT);
+  pinMode(motor3in2, OUTPUT);
+  //MOTOR 4 OUTPUTS
+  pinMode(motor4enB, OUTPUT);
+  pinMode(motor4in3, OUTPUT);
+  pinMode(motor4in4, OUTPUT);
+  //Motor speed control 
+  analogWrite(motor2enB, 255); 
+  analogWrite(motor1enA, 255); 
+  analogWrite(motor3enA, 255);
+  analogWrite(motor4enB, 255);
+}
+
+
+void loop() {
+  
+  // Serial
+  if (Serial.available() > 0)
+
+  {
+    state = Serial.read();
+
+  }
+
+  //Serial
+  //If else if statement 
+
+  if (state == 'F')
+
+  {
+
+    //Serial.println("foward");
+    forward();
+
+  } else if (state == 'B')
+
+  {
+
+    //Serial.println("Go bacwards");
+    backward();
+
+  } else if (state == 'L')
+
+  {
+
+    //Serial.println("Go Left");
+    left();
+
+  }else if (state == 'R')
+  
+  {
+
+    //Serial.println("Go Right");
+    right();
+
+  }
+
+  else if (state == 'S')
+
+  {
+
+    //Serial.println("Stop");
+    fullstop();
+
+  }else if (state == 'U')
+  
+  { 
+  
+    up();
+    
+  }else if (state == 'D')
+  
+  {
+  
+    down();
+  }
+}
